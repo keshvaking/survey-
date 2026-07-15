@@ -86,6 +86,7 @@ export type SurveyAnswers = {
   willingness_to_pay: string | null
   paid_before: string | null
   email: string
+  phone: string
   wants_call: boolean
 }
 
@@ -100,6 +101,7 @@ export const emptyAnswers: SurveyAnswers = {
   willingness_to_pay: null,
   paid_before: null,
   email: '',
+  phone: '',
   wants_call: false,
 }
 

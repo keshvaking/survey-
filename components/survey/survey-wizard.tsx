@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, LoaderCircle, PartyPopper } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,6 +37,10 @@ export function SurveyWizard() {
     setAnswers((prev) => ({ ...prev, [key]: value }))
   }
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step, score])
+
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email.trim())
 
   const canContinue = useMemo(() => {
@@ -50,7 +54,7 @@ export function SurveyWizard() {
       case 4:
         return !!answers.willingness_to_pay && !!answers.paid_before
       case 5:
-        return emailValid
+        return emailValid && (!answers.wants_call || answers.phone.trim().length >= 8)
       default:
         return false
     }
@@ -74,6 +78,7 @@ export function SurveyWizard() {
         paid_before: answers.paid_before,
         demand_score: computed,
         email: answers.email.trim(),
+        phone: answers.phone.trim() || null,
         wants_call: answers.wants_call,
       })
       if (insertError) throw insertError
@@ -243,6 +248,23 @@ export function SurveyWizard() {
                 onCheckedChange={(v) => set('wants_call', v)}
               />
             </div>
+            {answers.wants_call && (
+              <Field>
+                <Label htmlFor="phone" className="text-base font-medium">
+                  What&apos;s the best number to reach you on?
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="+91 98765 43210"
+                  value={answers.phone}
+                  onChange={(e) => set('phone', e.target.value)}
+                  className="h-11 bg-background/60"
+                />
+              </Field>
+            )}
           </>
         )}
 

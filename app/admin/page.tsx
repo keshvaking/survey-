@@ -15,6 +15,7 @@ type Row = {
   id: string
   created_at: string
   email: string | null
+  phone: string | null
   category: string | null
   demand_score: number | null
   wants_call: boolean | null
@@ -33,7 +34,7 @@ export default async function AdminPage() {
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('survey_responses')
-    .select('id, created_at, email, category, demand_score, wants_call')
+    .select('id, created_at, email, phone, category, demand_score, wants_call')
     .order('demand_score', { ascending: false })
 
   const rows = (data ?? []) as Row[]
@@ -61,6 +62,7 @@ export default async function AdminPage() {
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead className="text-right">Demand score</TableHead>
                 <TableHead>Wants call</TableHead>
@@ -71,6 +73,7 @@ export default async function AdminPage() {
               {rows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell className="font-medium text-foreground">{row.email ?? '—'}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.phone ?? '—'}</TableCell>
                   <TableCell className="text-muted-foreground">{categoryLabel(row.category)}</TableCell>
                   <TableCell className={`text-right font-semibold tabular-nums ${scoreClass(row.demand_score)}`}>
                     {row.demand_score ?? '—'}
